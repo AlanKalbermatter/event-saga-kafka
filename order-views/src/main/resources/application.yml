@@ -1,0 +1,67 @@
+server:
+  port: 8086
+  servlet:
+    context-path: /
+
+spring:
+  application:
+    name: order-views
+
+  kafka:
+    bootstrap-servers: localhost:9092
+    properties:
+      schema.registry.url: http://localhost:8081
+    streams:
+      application-id: order-views-service
+      properties:
+        # Exactly-once semantics
+        processing.guarantee: exactly_once_v2
+
+        # Performance optimizations
+        num.stream.threads: 2
+        replication.factor: 1
+        commit.interval.ms: 1000
+        cache.max.bytes.buffering: 10485760
+
+        # State store configuration
+        state.dir: /tmp/kafka-streams/order-views
+
+        # Topology optimization
+        topology.optimization: all
+
+        # Consumer configuration
+        auto.offset.reset: earliest
+        session.timeout.ms: 30000
+        heartbeat.interval.ms: 3000
+
+        # Producer configuration (for exactly-once)
+        enable.idempotence: true
+        max.in.flight.requests.per.connection: 5
+        retries: 2147483647
+        acks: all
+
+        # RocksDB configuration
+        rocksdb.config.setter: com.example.orderviews.config.RocksDbConfigSetter
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      show-details: always
+    prometheus:
+      enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+
+logging:
+  level:
+    com.example.orderviews: INFO
+    org.apache.kafka.streams: INFO
+    org.apache.kafka: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"

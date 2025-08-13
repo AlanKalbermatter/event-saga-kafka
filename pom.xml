@@ -60,20 +60,15 @@
     </properties>
 
     <modules>
+<!--        <module>load-test</module>-->
+        <module>order-views</module>
         <module>common-avro</module>
-        <module>infra/spring-kafka-starter</module>
         <module>order-service</module>
         <module>payment-service</module>
-        <module>inventory-service</module>
-        
-                        <!--        -->
-        <!--        <module>payment-service</module>
-        <module>inventory-service</module>-->
-        <!--        <module>inventory-service</module>-->
         <module>shipping-service</module>
+        <module>inventory-service</module>
         <module>notification-service</module>
-        <!--        <module>order-views</module>-->
-        <!--        <module>load-test</module>-->
+        <module>infra/spring-kafka-starter</module>
     </modules>
 
     <repositories>
@@ -198,8 +193,7 @@
             <dependency>
                 <groupId>com.example</groupId>
                 <artifactId>common-avro</artifactId>
-        
-                                <version>${project.version}</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.example</groupId>
