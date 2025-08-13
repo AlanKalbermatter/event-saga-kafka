@@ -31,4 +31,3 @@ app:
 logging:
   level:
     com.example.inventoryservice: DEBUG
-    org.springframework.kafka: DEBUG
