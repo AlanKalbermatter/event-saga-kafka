@@ -77,25 +77,53 @@ app:
     retry-base-delay-ms: 2000
     retry-max-delay-ms: 60000
 
-# Actuator endpoints
+# Observability and Monitoring Configuration
 management:
   endpoints:
     web:
       exposure:
-        include: health,info,prometheus,metrics
+        include: health,info,metrics,prometheus
+      base-path: /actuator
   endpoint:
     health:
       show-details: always
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
   metrics:
     export:
       prometheus:
         enabled: true
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
+      percentiles:
+        http.server.requests: 0.5, 0.9, 0.95, 0.99
+  tracing:
+    sampling:
+      probability: 1.0
 
-# Logging
+# OpenTelemetry Configuration
+otel:
+  exporter:
+    otlp:
+      endpoint: http://localhost:4317
+  resource:
+    attributes:
+      service.name: ${spring.application.name}
+      service.version: @project.version@
+  traces:
+    exporter: otlp
+  metrics:
+    exporter: otlp
+
+# Logging Configuration
 logging:
   level:
-    com.example.paymentservice: INFO
-    org.springframework.kafka: WARN
-    org.apache.kafka: WARN
+    com.example.paymentservice: DEBUG
+    io.micrometer: INFO
+    io.opentelemetry: INFO
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level [%X{traceId:-},%X{spanId:-}] [orderId:%X{orderId:-}] %logger{36} - %msg%n"
