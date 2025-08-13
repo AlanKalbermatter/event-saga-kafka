@@ -1,0 +1,35 @@
+{
+  "type": "record",
+  "name": "PaymentFailed",
+  "namespace": "com.example.events",
+  "doc": "Event emitted when payment authorization fails",
+  "fields": [
+    {
+      "name": "orderId",
+      "type": "string",
+      "doc": "Unique identifier for the order"
+    },
+    {
+      "name": "paymentId",
+      "type": "string",
+      "doc": "Unique identifier for the payment"
+    },
+    {
+      "name": "reason",
+      "type": "string",
+      "doc": "Reason for payment failure"
+    },
+    {
+      "name": "failedAt",
+      "type": "string",
+      "doc": "ISO-8601 timestamp when payment failed"
+    },
+    {
+      "name": "version",
+      "type": "int",
+      "default": 1,
+      "doc": "Schema version for backward compatibility"
+    }
+  ]
+}
+

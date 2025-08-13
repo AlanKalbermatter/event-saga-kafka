@@ -1,0 +1,53 @@
+{
+  "type": "record",
+  "name": "InventoryReserved",
+  "namespace": "com.example.events",
+  "doc": "Event emitted when inventory is successfully reserved for an order",
+  "fields": [
+    {
+      "name": "orderId",
+      "type": "string",
+      "doc": "Unique identifier for the order"
+    },
+    {
+      "name": "items",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "record",
+          "name": "ReservedItem",
+          "fields": [
+            {
+              "name": "sku",
+              "type": "string",
+              "doc": "Stock keeping unit identifier"
+            },
+            {
+              "name": "qty",
+              "type": "int",
+              "doc": "Quantity reserved"
+            }
+          ]
+        }
+      },
+      "doc": "List of items reserved from inventory"
+    },
+    {
+      "name": "warehouseId",
+      "type": "string",
+      "doc": "Identifier of the warehouse where items are reserved"
+    },
+    {
+      "name": "reservedAt",
+      "type": "string",
+      "doc": "ISO-8601 timestamp when inventory was reserved"
+    },
+    {
+      "name": "version",
+      "type": "int",
+      "default": 1,
+      "doc": "Schema version for backward compatibility"
+    }
+  ]
+}
+

@@ -1,0 +1,63 @@
+{
+  "type": "record",
+  "name": "OrderCreated",
+  "namespace": "com.example.events",
+  "doc": "Event emitted when a new order is created",
+  "fields": [
+    {
+      "name": "orderId",
+      "type": "string",
+      "doc": "Unique identifier for the order"
+    },
+    {
+      "name": "userId",
+      "type": "string",
+      "doc": "Identifier of the user who created the order"
+    },
+    {
+      "name": "total",
+      "type": "double",
+      "doc": "Total amount of the order"
+    },
+    {
+      "name": "items",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "record",
+          "name": "OrderItem",
+          "fields": [
+            {
+              "name": "sku",
+              "type": "string",
+              "doc": "Stock keeping unit identifier"
+            },
+            {
+              "name": "qty",
+              "type": "int",
+              "doc": "Quantity ordered"
+            },
+            {
+              "name": "price",
+              "type": "double",
+              "doc": "Unit price"
+            }
+          ]
+        }
+      },
+      "doc": "List of items in the order"
+    },
+    {
+      "name": "createdAt",
+      "type": "string",
+      "doc": "ISO-8601 timestamp when the order was created"
+    },
+    {
+      "name": "version",
+      "type": "int",
+      "default": 1,
+      "doc": "Schema version for backward compatibility"
+    }
+  ]
+}
+

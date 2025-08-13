@@ -1,0 +1,40 @@
+{
+  "type": "record",
+  "name": "PaymentRequested",
+  "namespace": "com.example.events",
+  "doc": "Event emitted when payment is requested for an order",
+  "fields": [
+    {
+      "name": "orderId",
+      "type": "string",
+      "doc": "Unique identifier for the order"
+    },
+    {
+      "name": "paymentId",
+      "type": "string",
+      "doc": "Unique identifier for the payment request"
+    },
+    {
+      "name": "amount",
+      "type": "double",
+      "doc": "Amount to be charged"
+    },
+    {
+      "name": "provider",
+      "type": "string",
+      "doc": "Payment provider (e.g., Stripe, PayPal)"
+    },
+    {
+      "name": "requestedAt",
+      "type": "string",
+      "doc": "ISO-8601 timestamp when payment was requested"
+    },
+    {
+      "name": "version",
+      "type": "int",
+      "default": 1,
+      "doc": "Schema version for backward compatibility"
+    }
+  ]
+}
+

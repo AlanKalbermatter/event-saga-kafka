@@ -1,0 +1,25 @@
+{
+  "type": "record",
+  "name": "OrderCompleted",
+  "namespace": "com.example.events",
+  "doc": "Event emitted when an order is successfully completed",
+  "fields": [
+    {
+      "name": "orderId",
+      "type": "string",
+      "doc": "Unique identifier for the order"
+    },
+    {
+      "name": "completedAt",
+      "type": "string",
+      "doc": "ISO-8601 timestamp when the order was completed"
+    },
+    {
+      "name": "version",
+      "type": "int",
+      "default": 1,
+      "doc": "Schema version for backward compatibility"
+    }
+  ]
+}
+

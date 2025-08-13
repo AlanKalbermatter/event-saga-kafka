@@ -1,0 +1,115 @@
+version: '3.8'
+
+services:
+  zookeeper:
+    volumes:
+      - ./data/zookeeper/data:/var/lib/zookeeper/data
+      - ./data/zookeeper/logs:/var/lib/zookeeper/log
+    environment:
+      # Reduce memory usage for local development
+      KAFKA_HEAP_OPTS: "-Xmx256M -Xms256M"
+    healthcheck:
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  kafka:
+    volumes:
+      - ./data/kafka:/var/lib/kafka/data
+    environment:
+      # JMX for local monitoring and troubleshooting
+      KAFKA_JMX_PORT: 9101
+      KAFKA_JMX_HOSTNAME: localhost
+      JMX_PORT: 9101
+      # Reduce memory usage
+      KAFKA_HEAP_OPTS: "-Xmx512M -Xms512M"
+      # Enable JMX for monitoring tools like JConsole
+      KAFKA_OPTS: "-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false"
+      # Faster startup for development
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 100
+    ports:
+      - "9101:9101"  # JMX port
+    healthcheck:
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  schema-registry:
+    volumes:
+      - ./data/schema-registry:/var/lib/schema-registry
+    environment:
+      # Reduce memory usage
+      SCHEMA_REGISTRY_HEAP_OPTS: "-Xmx256M -Xms256M"
+      # Enable debug mode for local development
+      SCHEMA_REGISTRY_DEBUG: 'true'
+    healthcheck:
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  ksqldb-server:
+    volumes:
+      - ./data/ksqldb:/var/lib/ksqldb
+    environment:
+      # Reduce memory usage
+      KSQL_HEAP_OPTS: "-Xmx512M -Xms256M"
+      # Faster processing for development
+      KSQL_COMMIT_INTERVAL_MS: 100
+      KSQL_CACHE_MAX_BYTES_BUFFERING: 10000000
+    healthcheck:
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  kafka-ui:
+    environment:
+      # Enable additional features for development
+      KAFKA_CLUSTERS_0_METRICS_PORT: 9101
+      KAFKA_CLUSTERS_0_METRICS_TYPE: JMX
+      # Enable JMX monitoring
+      KAFKA_CLUSTERS_0_KAFKACONNECT_0_JMXPORT: 35001
+    healthcheck:
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  postgres:
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+      - ./init-scripts:/docker-entrypoint-initdb.d
+    environment:
+      # Enable additional logging for development
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --lc-collate=C --lc-ctype=C"
+    command: >
+      postgres -c log_statement=all
+               -c log_destination=stderr
+               -c log_min_duration_statement=0
+               -c shared_preload_libraries=pg_stat_statements
+    ports:
+      - "5432:5432"
+    healthcheck:
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  connect:
+    volumes:
+      - ./data/connect:/var/lib/kafka-connect/data
+      - ./connectors:/etc/kafka-connect/jars
+    environment:
+      # Reduce memory usage
+      KAFKA_HEAP_OPTS: "-Xmx512M -Xms256M"
+      # Enable JMX for monitoring
+      KAFKA_JMX_PORT: 35001
+      KAFKA_JMX_HOSTNAME: localhost
+      # Faster offset flush for development
+      CONNECT_OFFSET_FLUSH_INTERVAL_MS: 5000
+      # Enable additional logging
+      CONNECT_LOG4J_ROOT_LOGLEVEL: INFO
+      CONNECT_LOG4J_LOGGERS: "org.apache.kafka.connect.runtime.rest=WARN,org.reflections=ERROR"
+    ports:
+      - "35001:35001"  # JMX port for Connect
+    healthcheck:
+      interval: 10s
+      timeout: 5s
+      retries: 3

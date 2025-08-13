@@ -1,0 +1,30 @@
+{
+  "type": "record",
+  "name": "InventoryRejected",
+  "namespace": "com.example.events",
+  "doc": "Event emitted when inventory reservation fails",
+  "fields": [
+    {
+      "name": "orderId",
+      "type": "string",
+      "doc": "Unique identifier for the order"
+    },
+    {
+      "name": "reason",
+      "type": "string",
+      "doc": "Reason for inventory rejection (e.g., insufficient stock)"
+    },
+    {
+      "name": "rejectedAt",
+      "type": "string",
+      "doc": "ISO-8601 timestamp when inventory was rejected"
+    },
+    {
+      "name": "version",
+      "type": "int",
+      "default": 1,
+      "doc": "Schema version for backward compatibility"
+    }
+  ]
+}
+

@@ -1,0 +1,30 @@
+{
+  "type": "record",
+  "name": "OrderCancelled",
+  "namespace": "com.example.events",
+  "doc": "Event emitted when an order is cancelled",
+  "fields": [
+    {
+      "name": "orderId",
+      "type": "string",
+      "doc": "Unique identifier for the order"
+    },
+    {
+      "name": "reason",
+      "type": "string",
+      "doc": "Reason for order cancellation"
+    },
+    {
+      "name": "cancelledAt",
+      "type": "string",
+      "doc": "ISO-8601 timestamp when the order was cancelled"
+    },
+    {
+      "name": "version",
+      "type": "int",
+      "default": 1,
+      "doc": "Schema version for backward compatibility"
+    }
+  ]
+}
+

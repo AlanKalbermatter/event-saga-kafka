@@ -1,0 +1,35 @@
+{
+  "type": "record",
+  "name": "PaymentAuthorized",
+  "namespace": "com.example.events",
+  "doc": "Event emitted when payment is successfully authorized",
+  "fields": [
+    {
+      "name": "orderId",
+      "type": "string",
+      "doc": "Unique identifier for the order"
+    },
+    {
+      "name": "paymentId",
+      "type": "string",
+      "doc": "Unique identifier for the payment"
+    },
+    {
+      "name": "amount",
+      "type": "double",
+      "doc": "Amount that was authorized"
+    },
+    {
+      "name": "authorizedAt",
+      "type": "string",
+      "doc": "ISO-8601 timestamp when payment was authorized"
+    },
+    {
+      "name": "version",
+      "type": "int",
+      "default": 1,
+      "doc": "Schema version for backward compatibility"
+    }
+  ]
+}
+
