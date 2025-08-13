@@ -2,7 +2,7 @@
 
 A microservices-based e-commerce system implementing the Saga pattern with choreography using Apache Kafka for event-driven architecture.
 
-## 🏗️ Architecture Overview
+## Architecture Overview
 
 This system demonstrates distributed transaction management using the **Saga Choreography** pattern across multiple microservices:
 
@@ -13,7 +13,7 @@ This system demonstrates distributed transaction management using the **Saga Cho
 - **Notification Service** - Sends customer notifications
 - **Order Views Service** - Kafka Streams for order aggregation and views
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 - Docker & Docker Compose
@@ -37,7 +37,7 @@ mvn spring-boot:run -pl notification-service &
 mvn spring-boot:run -pl order-views-service &
 ```
 
-## 📝 Creating an Order
+## Creating an Order
 
 ### Submit Order Request
 ```bash
@@ -64,7 +64,7 @@ curl -X POST http://localhost:8080/orders \
 }
 ```
 
-## 🔄 Event Flow
+## Event Flow
 
 ### Happy Path Flow
 ```
@@ -86,7 +86,7 @@ curl -X POST http://localhost:8080/orders \
 6. NotificationSent → Notification Service
 ```
 
-## 📊 Event Topics
+## Event Topics
 
 | Topic | Producer | Consumer | Event Type |
 |-------|----------|----------|------------|
@@ -96,7 +96,7 @@ curl -X POST http://localhost:8080/orders \
 | `shipping-events` | Shipping Service | Order, Notification | ShippingArranged, ShippingFailed |
 | `notification-events` | Notification Service | - | NotificationSent |
 
-## 🎯 Saga Choreography Pattern
+## Saga Choreography Pattern
 
 Each service listens to relevant events and publishes new events based on business logic:
 
@@ -110,7 +110,7 @@ Each service listens to relevant events and publishes new events based on busine
 - **Fault tolerance** - Automatic compensation handling
 - **Scalability** - Independent service scaling
 
-## 🔍 Monitoring Order Status
+## Monitoring Order Status
 
 ### Check Order Details
 ```bash
@@ -122,7 +122,7 @@ curl http://localhost:8081/order-views/orders/order-789
 curl http://localhost:8081/order-views/orders
 ```
 
-## 🏃‍♂️ Service Endpoints
+## Service Endpoints
 
 | Service | Port | Health Check |
 |---------|------|--------------|
@@ -133,7 +133,7 @@ curl http://localhost:8081/order-views/orders
 | Notification Service | 8085 | `GET /actuator/health` |
 | Order Views Service | 8081 | `GET /actuator/health` |
 
-## 🧪 Testing Scenarios
+## Testing Scenarios
 
 ### Test Inventory Shortage
 ```bash
@@ -164,7 +164,7 @@ curl -X POST http://localhost:8080/orders \
 - **Docker** - Containerization
 - **Maven** - Build and dependency management
 
-## 📋 Development
+## Development
 
 ### Build Individual Service
 ```bash
@@ -181,7 +181,7 @@ mvn test
 docker exec -it kafka kafka-topics --bootstrap-server localhost:9092 --list
 ```
 
-## 🚨 Error Handling
+## Error Handling
 
 The system implements comprehensive error handling:
 - **Retry mechanisms** for transient failures
@@ -190,7 +190,7 @@ The system implements comprehensive error handling:
 - **Idempotency** to handle duplicate events
 - **Timeout handling** for long-running operations
 
-## 📈 Scaling Considerations
+## Scaling Considerations
 
 - Each service can be scaled independently
 - Kafka partitions enable parallel processing
