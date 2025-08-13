@@ -66,6 +66,12 @@
             <version>${project.version}</version>
         </dependency>
 
+        <!-- Avro Core Library -->
+        <dependency>
+            <groupId>org.apache.avro</groupId>
+            <artifactId>avro</artifactId>
+        </dependency>
+
         <!-- Spring Kafka Starter -->
         <dependency>
             <groupId>com.example</groupId>

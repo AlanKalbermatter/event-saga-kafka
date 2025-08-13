@@ -68,7 +68,7 @@ public class OrderController {
         logger.debug("Getting order: {}", orderId);
 
         return orderService.getOrder(orderId)
-                .map(order -> ResponseEntity.ok(order))
+                .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
