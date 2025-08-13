@@ -71,7 +71,7 @@
         <module>inventory-service</module>-->
         <!--        <module>inventory-service</module>-->
         <module>shipping-service</module>
-        <!--        <module>notification-service</module>-->
+        <module>notification-service</module>
         <!--        <module>order-views</module>-->
         <!--        <module>load-test</module>-->
     </modules>
