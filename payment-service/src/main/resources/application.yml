@@ -1,0 +1,101 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: payment-service
+
+  # Database Configuration
+  datasource:
+    url: jdbc:h2:mem:paymentdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: password
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        format_sql: true
+
+  flyway:
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+
+  # Kafka Configuration
+  kafka:
+    bootstrap-servers: localhost:9092
+    schema-registry:
+      url: http://localhost:8081
+
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+      acks: all
+      retries: 3
+      properties:
+        enable.idempotence: true
+        max.in.flight.requests.per.connection: 1
+
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      properties:
+        spring.deserializer.value.delegate.class: io.confluent.kafka.serializers.KafkaAvroDeserializer
+        specific.avro.reader: true
+        auto.offset.reset: earliest
+        enable.auto.commit: false
+        max.poll.records: 10
+        session.timeout.ms: 30000
+        heartbeat.interval.ms: 10000
+
+# Application specific configuration
+app:
+  kafka:
+    topics:
+      order-created: order.created
+      payment-authorized: payment.authorized
+      payment-failed: payment.failed
+      payment-requested-retry: payment.requested.retry
+      payment-requested-dlt: payment.requested.dlt
+
+    consumer:
+      group-id: payment-service-group
+      retry-group-id: payment-service-retry-group
+      concurrency: 3
+
+    error-handling:
+      retry-attempts: 2
+      retry-interval: 1000
+      dlt-enabled: true
+
+  payment:
+    max-retry-attempts: 3
+    retry-base-delay-ms: 2000
+    retry-max-delay-ms: 60000
+
+# Actuator endpoints
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics
+  endpoint:
+    health:
+      show-details: always
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+
+# Logging
+logging:
+  level:
+    com.example.paymentservice: INFO
+    org.springframework.kafka: WARN
+    org.apache.kafka: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
