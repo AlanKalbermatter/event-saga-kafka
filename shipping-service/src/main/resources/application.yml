@@ -1,0 +1,60 @@
+spring:
+  application:
+    name: shipping-service
+
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    streams:
+      application-id: shipping-service
+      state-dir: /tmp/kafka-streams
+      properties:
+        # Exactly-once V2 configuration
+        processing.guarantee: exactly_once_v2
+        commit.interval.ms: 1000
+        # Replication factor
+        replication.factor: 1
+        # Window store configuration
+        window.store.retention.ms: 900000  # 15 minutes
+        # State store configuration
+        num.stream.threads: 2
+        # Consumer configuration
+        auto.offset.reset: earliest
+        enable.auto.commit: false
+    properties:
+      # Schema Registry configuration
+      schema.registry.url: ${SCHEMA_REGISTRY_URL:http://localhost:8081}
+      # Avro serialization
+      key.serializer: org.apache.kafka.common.serialization.StringSerializer
+      value.serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+      key.deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value.deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+      specific.avro.reader: true
+
+server:
+  port: 8083
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus,kafkastreams
+  endpoint:
+    health:
+      show-details: always
+    metrics:
+      enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+    tags:
+      application: ${spring.application.name}
+      service: shipping
+
+logging:
+  level:
+    com.example.shippingservice: DEBUG
+    org.apache.kafka.streams: INFO
+    org.springframework.kafka: INFO
+  pattern:
+    console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"

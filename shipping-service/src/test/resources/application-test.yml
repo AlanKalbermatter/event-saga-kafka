@@ -1,0 +1,15 @@
+spring:
+  kafka:
+    bootstrap-servers: ${spring.embedded.kafka.brokers}
+    streams:
+      application-id: shipping-service-test
+      properties:
+        processing.guarantee: exactly_once_v2
+    properties:
+      schema.registry.url: mock://test
+
+logging:
+  level:
+    com.example.shippingservice: DEBUG
+    org.apache.kafka.streams: WARN
+    org.springframework.kafka: WARN

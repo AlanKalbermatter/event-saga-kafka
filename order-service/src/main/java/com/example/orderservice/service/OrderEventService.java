@@ -1,23 +1,31 @@
 package com.example.orderservice.service;
 
-        try {
-            // Create OrderCreated event payload as JSON (will be converted to Avro in OutboxRelay)
-            Map<String, Object> orderCreatedPayload = new HashMap<>();
-            orderCreatedPayload.put("orderId", order.getOrderId());
-            orderCreatedPayload.put("userId", order.getUserId());
-            orderCreatedPayload.put("total", order.getTotal().doubleValue());
-            orderCreatedPayload.put("items", items.stream()
-                    .map(dto -> {
-                        Map<String, Object> item = new HashMap<>();
-                        item.put("sku", dto.getSku());
-                        item.put("quantity", dto.getQty());
-                        item.put("price", dto.getPrice().doubleValue());
-                        return item;
-                    })
-                    .toList());
-            orderCreatedPayload.put("createdAt", order.getCreatedAt().toString());
-            orderCreatedPayload.put("version", 1);
-            String payload = objectMapper.writeValueAsString(orderCreatedPayload);
+import com.example.events.OrderCreated;
+import com.example.events.OrderItem;
+import com.example.orderservice.dto.OrderItemDto;
+import com.example.orderservice.entity.Order;
+import com.example.orderservice.entity.OrderStatus;
+import com.example.orderservice.entity.OutboxEvent;
+import com.example.orderservice.repository.OutboxEventRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.time.Instant;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@Service
+public class OrderEventService {
+
+    private static final Logger logger = LoggerFactory.getLogger(OrderEventService.class);
+
+    private final OutboxEventRepository outboxEventRepository;
+    private final ObjectMapper objectMapper;
 
     @Autowired
     public OrderEventService(OutboxEventRepository outboxEventRepository, ObjectMapper objectMapper) {
@@ -27,15 +35,17 @@ package com.example.orderservice.service;
 
     public void createOrderCreatedEvent(Order order, List<OrderItemDto> items) {
         logger.info("Creating OrderCreated event for order: {}", order.getOrderId());
+
+        try {
             // Convert DTOs to Avro objects
             List<OrderItem> avroItems = items.stream()
                     .map(dto -> OrderItem.newBuilder()
                             .setSku(dto.getSku())
-                            .setQuantity(dto.getQty())
+                            .setQty(dto.getQty())
                             .setPrice(dto.getPrice().doubleValue())
                             .build())
                     .toList();
-                    .setItems(avroItems)
+
             // Create Avro event
             OrderCreated orderCreated = OrderCreated.newBuilder()
                     .setOrderId(order.getOrderId())
@@ -43,11 +53,6 @@ package com.example.orderservice.service;
                     .setTotal(order.getTotal().doubleValue())
                     .setItems(avroItems)
                     .setCreatedAt(order.getCreatedAt().toString())
-                    .setVersion(1)
-                    .build();
-
-            // Convert to JSON for storage
-            String payload = orderCreated.toString();
                     .setVersion(1)
                     .build();
 
